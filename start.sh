@@ -1279,10 +1279,6 @@ startAgent() {
 }
 
 installNeZhaAgent2() {
-  if [ ! -e "$exepath" ]; then
-    red "未安装探针，请先安装！！!"
-    return
-  fi
 
   local workedir="${installpath}/serv00-play/nezha"
   cd $workedir
@@ -1354,7 +1350,7 @@ EOF
   ./nezha-agent edit
 
   # 检查是否提供了所有必要的变量
-if [ -z "$server" ] || [ -z "$port" ] || [ -z "$pwd" ]; then
+if [ -z "$nezha_domain" ] || [ -z "$nezha_port" ] || [ -z "$nezha_pwd" ]; then
   echo "Error: Please provide all required variables: \$server, \$port, and \$pwd."
   exit 1
 fi
@@ -1365,9 +1361,13 @@ if [ ! -f "config.yml" ]; then
   exit 1
 fi
 
-# 使用sed替换client_secret和server的值
-sed -i "/^client_secret:/c\client_secret: \"$pwd\"" config.yml
-sed -i "/^server:/c\server: \"$server:$port\"" config.yml
+# 替换client_secret的值
+sed -i '' -e "/^client_secret:/ s/\"\"/\"$nezha_pwd\"/" config.yml
+
+# 替换server的值
+sed -i '' -e "/^server:/ s/\"\"/\"$nezha_domain:$nezha_port\"/" config.yml
+
+cat config.yml
   
   if checknezhaAgentAlive; then
     stopNeZhaAgent
