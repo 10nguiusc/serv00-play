@@ -60,6 +60,7 @@ install() {
   fi
 
   cd ${installpath}/serv00-play
+  mkdir ./nezha
   chmod +x ./start.sh
   chmod +x ./keepalive.sh
   chmod +x ./tgsend.sh
