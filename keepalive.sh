@@ -102,21 +102,22 @@ startNeZhaAgent() {
     red "未安装哪吒探针，请先进行安装！"
     return 1
   fi
-  nezha_domain=$(jq -r ".nezha_domain" $config)
-  nezha_port=$(jq -r ".nezha_port" $config)
-  nezha_pwd=$(jq -r ".nezha_pwd" $config)
-  tls=$(jq -r ".tls" $config)
+  #nezha_domain=$(jq -r ".nezha_domain" $config)
+  #nezha_port=$(jq -r ".nezha_port" $config)
+  #nezha_pwd=$(jq -r ".nezha_pwd" $config)
+  #tls=$(jq -r ".tls" $config)
 
-  if checknezhaAgentAlive; then
-    stopNeZhaAgent
-  fi
+  #if checknezhaAgentAlive; then
+  #  stopNeZhaAgent
+  #fi
 
-  local args="--report-delay 4 --disable-auto-update --disable-force-update "
-  if [[ "$tls" == "y" ]]; then
-    args="${args} --tls "
-  fi
+  #local args="--report-delay 4 --disable-auto-update --disable-force-update "
+  #if [[ "$tls" == "y" ]]; then
+  #  args="${args} --tls "
+  #fi
 
-  nohup ./nezha-agent ${args} -s "${nezha_domain}:${nezha_port}" -p "${nezha_pwd}" >/dev/null 2>&1 &
+  #nohup ./nezha-agent ${args} -s "${nezha_domain}:${nezha_port}" -p "${nezha_pwd}" >/dev/null 2>&1 &
+  nohup ./nezha-agent >/dev/null 2>&1 &
 
 }
 
