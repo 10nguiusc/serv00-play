@@ -34,10 +34,10 @@ for info in "${hosts_info[@]}"; do
 
   if echo "$output" | grep -q "keepalive.sh"; then
     echo "登录成功"
-    msg="${user}@${host},Alive!\n"
+    msg="${user}@${host} is Alive!\n"
   else
     echo "登录失败"
-    msg="${user}@${host},Not Alive!\n"
+    msg="${user}@${host} is Not Alive!\n"
   fi
   summary=$summary$(echo -n $msg)
 done
