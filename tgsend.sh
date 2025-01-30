@@ -53,11 +53,11 @@ toTGMsg() {
   local notify_content=$(echo "$msg" | sed -E 's/.*user:[^,]*,//' | xargs)
 
   # 格式化消息内容，Markdown 换行使用两个空格 + 换行
-  local formatted_msg="${title}  \n\n"
-  formatted_msg+="${host_icon} *主机：* ${host}  \n"
-  formatted_msg+="${user_icon} *用户：* ${user}  \n"
-  formatted_msg+="${time_icon} *时间：* ${current_time}  \n\n"
-  formatted_msg+="${notify_icon} *通知内容：* ${notify_content}  \n\n"
+  local formatted_msg=""
+  formatted_msg+="${host}  \n"
+  formatted_msg+="${user}  \n"
+  formatted_msg+="${current_time}  \n"
+  formatted_msg+="${notify_content} \n"
 
   echo -e "$formatted_msg|${host}|${user}" # 使用 -e 选项以确保换行符生效
 }
