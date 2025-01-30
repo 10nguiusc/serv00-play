@@ -46,7 +46,7 @@ for info in "${hosts_info[@]}"; do
 done
 
 # 在 summary 的最后添加操作主机的 IP 地址
-summary="${summary}✈️ ======》 IP: ${ActionIP}\n"
+summary="${summary}ActionIP: ${ActionIP}\n"
 
 if [[ "$LOGININFO" == "Y" ]]; then
   chmod +x ./tgsend.sh
