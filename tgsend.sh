@@ -41,9 +41,9 @@ toTGMsg() {
   local current_time=$(date "+%Y-%m-%d %H:%M:%S")
 
   if [[ "$msg" != Host:* ]]; then
-    local formatted_msg="${title}  \n\n"
-    formatted_msg+="${time_icon} *时间：* ${current_time}  \n"
-    formatted_msg+="${notify_icon} *通知内容：*    \n$msg  \n\n"
+    local formatted_msg=""
+    formatted_msg+="${current_time}\n"
+    formatted_msg+="$msg"
     echo -e "$formatted_msg"
     return
   fi
