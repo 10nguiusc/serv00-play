@@ -35,16 +35,19 @@ for info in "${hosts_info[@]}"; do
 
   if echo "$output" | grep -q "keepalive.sh"; then
     echo "登录成功"
-    msg="🟢主机 ${host}, 用户 ${user}， 登录成功! 操作主机 IP: ${ActionIP}\n"
+    msg="🟢主机 ${host}, 用户 ${user}， 登录成功!\n"
   else
     echo "登录失败"
-    msg="🔴主机 ${host}, 用户 ${user}， 登录失败! 操作主机 IP: ${ActionIP}\n"
+    msg="🔴主机 ${host}, 用户 ${user}， 登录失败!}\n"
     chmod +x ./tgsend.sh
     export PASS=$pass
-    ./tgsend.sh "Host:$host, user:$user, 登录失败，请检查! 操作主机 IP: ${ActionIP}"
+    ./tgsend.sh "Host:$host, user:$user, 登录失败，请检查!"
   fi
   summary=$summary$(echo -n $msg)
 done
+
+# 在 summary 的最后添加操作主机的 IP 地址
+summary="${summary}✈️ ======》 IP: ${ActionIP}\n"
 
 if [[ "$LOGININFO" == "Y" ]]; then
   chmod +x ./tgsend.sh
