@@ -9,10 +9,9 @@ BUTTON_URL=${BUTTON_URL:-null}
 LOGININFO=${LOGININFO:-N}
 export TELEGRAM_TOKEN TELEGRAM_USERID BUTTON_URL
 
-# 获取当前主机的 IP 地址
-ActionIP=$(hostname -I | awk '{print $1}')  # 获取第一个非环回 IP 地址
+ActionIP=$(curl -s https://api.ipify.org)  # 使用 ipify 服务获取公网IP
 if [ -z "$ActionIP" ]; then
-  ActionIP="未知 IP"
+  ActionIP="未知公网IP"
 fi
 
 # 使用 jq 提取 JSON 数组，并将其加载为 Bash 数组
