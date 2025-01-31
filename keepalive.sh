@@ -267,7 +267,7 @@ for obj in "${monitor[@]}"; do
       if ! checkProcAlive "sun-panel"; then
         msg="sun-panel restart failed."
       else
-        msg="sun-panel 重启成功."
+        msg="sun-panel restart successfully."
       fi
     fi
   elif [ "$obj" == "webssh" ]; then
@@ -277,7 +277,7 @@ for obj in "${monitor[@]}"; do
       if ! checkProcAlive "wssh"; then
         msg="webssh restart failed."
       else
-        msg="webssh 重启成功."
+        msg="webssh restart successfully."
       fi
     fi
   elif [ "$obj" == "vmess" ]; then
