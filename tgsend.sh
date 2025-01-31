@@ -54,9 +54,8 @@ toTGMsg() {
 
   # 格式化消息内容，Markdown 换行使用两个空格 + 换行
   local formatted_msg=""
-  formatted_msg+="${host}  \n"
-  formatted_msg+="${user}  \n"
   formatted_msg+="${current_time}  \n"
+  formatted_msg+="${user}@${host}  \n"
   formatted_msg+="${notify_content} \n"
 
   echo -e "$formatted_msg|${host}|${user}" # 使用 -e 选项以确保换行符生效
