@@ -1,4 +1,4 @@
-name: 批量保活进程
+name: 单机保活进程_s15_stephesn
 
 on:
   schedule:
@@ -23,7 +23,7 @@ jobs:
 
       - name: 登录各个serv00并执行保活脚本
         env:
-          HOSTS_JSON: ${{ secrets.HOSTS_JSON }}
+          HOSTS_JSON: ${{ secrets.HOSTS_JSON_1 }}
           TELEGRAM_TOKEN: ${{secrets.TELEGRAM_TOKEN}}
           TELEGRAM_USERID: ${{secrets.TELEGRAM_USERID}}
           WXSENDKEY: ${{secrets.WXSENDKEY}}
