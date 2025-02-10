@@ -26,10 +26,10 @@ fi
 PS3="请选择(输入0退出): "
 install() {
   cd ${installpath}
-  if [ -d serv00-play ]; then
+  if [ -d "serv00-play" ]; then
     cd "serv00-play"
     git stash
-    if git pull; then
+    if git pull origin main; then
       echo "更新完毕"
       #重新给各个脚本赋权限
       chmod +x ./start.sh
@@ -38,6 +38,7 @@ install() {
       chmod +x ./wxsend.sh
       chmod +x ${installpath}/serv00-play/singbox/start.sh
       chmod +x ${installpath}/serv00-play/singbox/killsing-box.sh
+      chmod +x ${installpath}/serv00-play/singbox/autoUpdateHyIP.sh
       chmod +x ${installpath}/serv00-play/ssl/cronSSL.sh
       red "请重新启动脚本!"
       exit 0
@@ -67,6 +68,7 @@ install() {
   chmod +x ./wxsend.sh
   chmod +x ${installpath}/serv00-play/singbox/start.sh
   chmod +x ${installpath}/serv00-play/singbox/killsing-box.sh
+  chmod +x ${installpath}/serv00-play/singbox/autoUpdateHyIP.sh
   chmod +x ${installpath}/serv00-play/ssl/cronSSL.sh
   read -p "$(yellow 设置完毕,需要重新登录才能生效，是否重新登录？[y/n] [y]:)" input
   input=${input:-y}
@@ -916,55 +918,12 @@ EOF
 }
 
 startSingBox() {
-  cd ${installpath}/serv00-play/singbox
-
-  if [[ ! -e "singbox.json" ]]; then
-    red "请先进行配置!"
-    return 1
-  fi
-
-  # if [[ ! -e ${installpath}/serv00-play/singbox/serv00sb ]] || [[ ! -e ${installpath}/serv00-play/singbox/cloudflared ]]; then
-  #   read -p "请输入使用密码:" password
-  # fi
-
-  if ! checkDownload "serv00sb"; then
-    return
-  fi
-  if ! checkDownload "cloudflared"; then
-    return
-  fi
-
-  if checkSingboxAlive; then
-    red "sing-box 已在运行，请勿重复操作!"
-    return 1
-  else #启动可能需要cloudflare，此处表示cloudflare和sb有一个不在线，所以干脆先杀掉再重启。
-    chmod 755 ./killsing-box.sh
-    ./killsing-box.sh
-  fi
-
-  if chmod +x start.sh && ! ./start.sh; then
-    red "sing-box启动失败！"
-    exit 1
-  fi
-  sleep 1
-  if checkProcAlive "serv00sb"; then
-    yellow "启动成功!"
-  else
-    red "启动失败!"
-  fi
+  start_sing_box
 
 }
 
 stopSingBox() {
-  cd ${installpath}/serv00-play/singbox
-  if [ -f killsing-box.sh ]; then
-    chmod 755 ./killsing-box.sh
-    ./killsing-box.sh
-  else
-    echo "请先安装serv00-play!!!"
-    return
-  fi
-  echo "已停掉sing-box!"
+  stop_sing_box
 }
 
 killUserProc() {
@@ -1142,6 +1101,9 @@ InitServer() {
       rm -rf ~/* 2>/dev/null
     else
       rm -rf ~/* ~/.* 2>/dev/null
+      clean_all_domains
+      clean_all_dns
+      create_default_domain
     fi
     cleanPort
     yellow "初始化完毕"
@@ -2006,12 +1968,29 @@ addPortMenu() {
   fi
   loadPort
   read -p "请输入端口备注(如hy2，vmess，用于脚本自动获取端口):" opts
-  local port=$(getPort $type $opts)
-  if [[ "$port" == "failed" ]]; then
-    red "分配端口失败,请重新操作!"
+  read -p "是否自动分配端口? [y/n] [y]:" input
+  input=${input:-y}
+  if [[ "$input" == "y" ]]; then
+    port=$(getPort $type $opts)
+    if [[ "$port" == "failed" ]]; then
+      red "分配端口失败,请重新操作!"
+    else
+      green "分配出来的端口是:$port"
+    fi
   else
-    green "分配出来的端口是:$port"
+    read -p "请输入端口号:" port
+    if [[ -z "$port" ]]; then
+      red "端口不能为空"
+      return 1
+    fi
+    resp=$(devil port add $type $port $opts)
+    if [[ "$resp" =~ .*succesfully.*$ || "$resp" =~ .*Ok.*$ ]]; then
+      green "添加端口成功!"
+    else
+      red "添加端口失败!"
+    fi
   fi
+
 }
 
 portServ() {
@@ -2337,29 +2316,12 @@ rootServ() {
   showMenu
 }
 
-getUnblockIP() {
-  local hostname=$(hostname)
-  local host_number=$(echo "$hostname" | awk -F'[s.]' '{print $2}')
-  local hosts=("cache${host_number}.serv00.com" "web${host_number}.serv00.com" "$hostname")
-
+showIPStatus() {
   yellow "----------------------------------------------"
   green "  主机名称          |      IP        |  状态"
   yellow "----------------------------------------------"
-  # 遍历主机名称数组
-  for host in "${hosts[@]}"; do
-    # 获取 API 返回的数据
-    local response=$(curl -s "https://ss.botai.us.kg/api/getip?host=$host")
 
-    # 检查返回的结果是否包含 "not found"
-    if [[ "$response" =~ "not found" ]]; then
-      echo "未识别主机${host}, 请联系作者饭奇骏!"
-      return
-    fi
-    local ip=$(echo "$response" | awk -F "|" '{print $1 }')
-    local status=$(echo "$response" | awk -F "|" '{print $2 }')
-    printf "%-20s | %-15s | %-10s\n" "$host" "$ip" "$status"
-  done
-
+  show_ip_status
 }
 
 checkProcStatus() {
@@ -2455,7 +2417,7 @@ import_accounts() {
   fi
 
   cd $workdir
-  read -p "请输入会员密码:" passwd
+  read -s -p "请输入会员密码:" passwd
   if ! checkDownload "importd_panel_accounts.sh" 0 "$passwd" 1; then
     return 1
   fi
@@ -2981,35 +2943,54 @@ checkInstalled() {
 }
 
 changeHy2IP() {
+  cd ${installpath}/serv00-play/singbox
+  if [[ ! -e "singbox.json" || ! -e "config.json" ]]; then
+    red "未安装节点，请先安装!"
+    return 1
+  fi
+  showIPStatus
   read -p "是否让程序为HY2选择可用的IP？[y/n] [y]:" input
   input=${input:-y}
 
-  if [[ "$input" == "y" ]]; then
-    cd ${installpath}/serv00-play/singbox
-    if [[ ! -e "singbox.json" || ! -e "config.json" ]]; then
-      red "未安装节点，请先安装!"
+  if [[ "$input" == "n" ]]; then
+    read -p "是否手动选择IP？[y/n] [y]:" choose
+    choose=${choose:-y}
+    if [[ "$choose" == "y" ]]; then
+      read -p "请选择你要的IP的序号:" num
+      if [[ -z "$num" ]]; then
+        red "选择不能为空!"
+        return 1
+      fi
+      if [[ $num -lt 1 || $num -gt ${#localIPs[@]} ]]; then
+        echo "错误：num 的值非法！请输入 1 到 ${#localIPs[@]} 之间的整数。"
+        return 1
+      fi
+      hy2_ip=${localIPs[$((num - 1))]}
+    else
       return 1
     fi
+  else
     hy2_ip=$(get_ip)
-    if [[ -z "hy2_ip" ]]; then
-      red "很遗憾，已无可用IP!"
-      return 1
-    fi
-    if ! upInsertFd singbox.json HY2IP "$hy2_ip"; then
-      red "更新singbox.json配置文件失败!"
-      return 1
-    fi
-
-    if ! upSingboxFd config.json "inbounds" "tag" "hysteria-in" "listen" "$hy2_ip"; then
-      red "更新config.json配置文件失败!"
-      return 1
-    fi
-    green "HY2 更换IP成功，当前IP为 $hy2_ip"
-
-    echo "正在重启sing-box..."
-    stopSingBox
-    startSingBox
   fi
+
+  if [[ -z "$hy2_ip" ]]; then
+    red "很遗憾，已无可用IP!"
+    return 1
+  fi
+  if ! upInsertFd singbox.json HY2IP "$hy2_ip"; then
+    red "更新singbox.json配置文件失败!"
+    return 1
+  fi
+
+  if ! upSingboxFd config.json "inbounds" "tag" "hysteria-in" "listen" "$hy2_ip"; then
+    red "更新config.json配置文件失败!"
+    return 1
+  fi
+  green "HY2 更换IP成功，当前IP为 $hy2_ip"
+
+  echo "正在重启sing-box..."
+  stopSingBox
+  startSingBox
 
 }
 
@@ -3027,7 +3008,7 @@ linkAliveServ() {
   fi
   cd $workdir
 
-  read -p "请输入会员密码:" passwd
+  read -s -p "请输入会员密码:" passwd
   #判断密码是否为空
   if [[ -z "$passwd" ]]; then
     red "密码不能为空!"
@@ -3038,9 +3019,9 @@ linkAliveServ() {
   fi
 
   chmod +x ./linkAlive.sh
-  ./linkAlive.sh "$passwd" && rm -rf ./linkAlive.sh
+  ./linkAlive.sh "$passwd"
 
-  showMenu
+  #showMenu
 }
 
 linkAliveStatment() {
@@ -3064,12 +3045,26 @@ vip_statement() {
   return 0
 }
 
+getLatestVer() {
+  ver=$(git ls-remote --tags https://github.com/frankiejun/serv00-play.git | awk -F/ '{print $3}' | sort -V | tail -n 1)
+  echo $ver
+}
+getCurrentVer() {
+  ver=$(git describe --tags --abbrev=0 2>/dev/null)
+  if [ $? -ne 0 ]; then
+    echo null
+  else
+    echo $ver
+  fi
+}
+
 showMenu() {
   art_wrod=$(figlet "serv00-play")
   echo "<------------------------------------------------------------------>"
   echo -e "${CYAN}${art_wrod}${RESET}"
   echo -e "${GREEN} 饭奇骏频道:https://www.youtube.com/@frankiejun8965 ${RESET}"
   echo -e "${GREEN} TG交流群:https://t.me/fanyousuiqun ${RESET}"
+  echo -e "${GREEN} 当前版本号:$(getCurrentVer) 最新版本号:$(getLatestVer) ${RESET}"
   echo "<------------------------------------------------------------------>"
   echo "请选择一个选项:"
 
@@ -3146,7 +3141,7 @@ showMenu() {
       rootServ
       ;;
     23)
-      getUnblockIP
+      showIPStatus
       ;;
     24)
       changeHy2IP
