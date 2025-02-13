@@ -1310,6 +1310,11 @@ installNeZhaAgent2() {
     }
 EOF
 
+# 检查文件是否存在
+if [ -f "config.yml" ]; then
+  rm -f "config.yml"
+fi
+
   ./nezha-agent edit
 
   # 检查是否提供了所有必要的变量
