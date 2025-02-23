@@ -90,11 +90,6 @@ encoded_url=$(urlencode "$button_url")
 #echo "encoded_url: $encoded_url"
 reply_markup='{
     "inline_keyboard": [
-     [
-                {
-                    "text": "来自:  \"'"${user}"'\"","callback_data": "shorcuts://run-shortcut?name=Serv00个体保活"
-                }
-     ],
       [
         {"text": "探针仪表盘", "url": "'"${encoded_url}"'"}
       ]
