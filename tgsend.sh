@@ -92,7 +92,7 @@ reply_markup='{
     "inline_keyboard": [
      [
                 {
-                    "text": "来自:  \"#SERVER.NAME#\"","callback_data": "shorcuts://run-shortcut?name=Serv00个体保活"
+                    "text": "来自:  \"'"${user}"'\"","callback_data": "shorcuts://run-shortcut?name=Serv00个体保活"
                 }
      ],
       [
