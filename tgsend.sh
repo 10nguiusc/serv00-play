@@ -92,9 +92,6 @@ reply_markup='{
     "inline_keyboard": [
       [
         {"text": "探针仪表盘", "url": "'"${encoded_url}"'"}
-      ],
-      [
-        {"text": "来自:'"${user}"'", "callback-data": "#"}
       ]
     ]
   }'
