@@ -38,7 +38,7 @@ toTGMsg() {
   local notify_icon="📢"
 
   # 获取当前时间
-  local current_time=$(date "+%Y-%m-%d %H:%M:%S")
+  local current_time=$(date "+%Y-%m-%d %H:%M:%S.%N %z %Z")
 
   if [[ "$msg" != Host:* ]]; then
     local formatted_msg=""
@@ -53,10 +53,10 @@ toTGMsg() {
   local notify_content=$(echo "$msg" | sed -E 's/.*user:[^,]*,//' | xargs)
 
   # 格式化消息内容，Markdown 换行使用两个空格 + 换行
-  local formatted_msg=""
-  formatted_msg+="${current_time}  \n"
+  local formatted_msg="# *Nezha探针警报*\n\n时间："
+  formatted_msg+="${current_time}  \n\n*[Incident]"
   formatted_msg+="${user}@${host}  \n"
-  formatted_msg+="${notify_content} \n"
+  formatted_msg+="${notify_content}* \n"
 
   echo -e "$formatted_msg|${host}|${user}" # 使用 -e 选项以确保换行符生效
 }
@@ -91,7 +91,10 @@ encoded_url=$(urlencode "$button_url")
 reply_markup='{
     "inline_keyboard": [
       [
-        {"text": "点击查看", "url": "'"${encoded_url}"'"}
+        {"text": "探针仪表盘", "url": "'"${encoded_url}"'"}
+      ],
+      [
+        {"text": "来自:'"${user}"'", "callback-data": "#"}
       ]
     ]
   }'
