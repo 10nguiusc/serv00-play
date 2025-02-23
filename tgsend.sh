@@ -41,7 +41,7 @@ toTGMsg() {
   local current_time=$(date "+%Y-%m-%d %H:%M:%S.%N %z %Z")
 
   if [[ "$msg" != Host:* ]]; then
-    local formatted_msg="# *Nezha探针警报*\n\n时间："
+    local formatted_msg="# *Serv00探针警报*\n\n时间："
     formatted_msg+="${current_time}  \n\n*[Incident]"
     formatted_msg+="$msg*"
     echo -e "$formatted_msg"
@@ -53,7 +53,7 @@ toTGMsg() {
   local notify_content=$(echo "$msg" | sed -E 's/.*user:[^,]*,//' | xargs)
 
   # 格式化消息内容，Markdown 换行使用两个空格 + 换行
-  local formatted_msg="# *Nezha探针警报*\n\n时间："
+  local formatted_msg="# *Serv00探针警报*\n\n时间："
   formatted_msg+="${current_time}  \n\n*[Incident]"
   formatted_msg+="${user}@${host}  \n"
   formatted_msg+="${notify_content}* \n"
