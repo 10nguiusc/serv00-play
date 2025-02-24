@@ -1,4 +1,4 @@
-name: 单机保活进程_s10_ahy302
+name: keepalive_s10
 
 on:
   schedule:
