@@ -1,4 +1,4 @@
-name: deploys_s8
+name: deploys_s08
 
 on:
   schedule:
