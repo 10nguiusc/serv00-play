@@ -1,4 +1,4 @@
-name: 单机保活进程_s6_Dyxdgcb
+name: keepalive_s6
 
 on:
   schedule:
