@@ -1,4 +1,4 @@
-name: deploy_s09
+name: keepalive_s09
 
 on:
   schedule:
