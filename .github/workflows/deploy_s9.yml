@@ -1,4 +1,4 @@
-name: 单机保活进程_s9_asfdgaw
+name: deploy_s9
 
 on:
   schedule:
