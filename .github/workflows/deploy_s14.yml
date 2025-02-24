@@ -1,4 +1,4 @@
-name: 单机保活进程_s14_lowelowe
+name: keepalive_s14
 
 on:
   schedule:
