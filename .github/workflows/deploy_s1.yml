@@ -1,4 +1,4 @@
-name: 单机保活进程_s1_nft5026
+name: keepalive_s1
 
 on:
   schedule:
