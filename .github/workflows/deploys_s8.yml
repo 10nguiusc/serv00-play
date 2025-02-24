@@ -1,4 +1,4 @@
-name: 单机保活进程_s8_xiaoya123
+name: deploys_s8
 
 on:
   schedule:
