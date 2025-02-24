@@ -1,4 +1,4 @@
-name: keepalive_s6
+name: keepalive_s06
 
 on:
   schedule:
