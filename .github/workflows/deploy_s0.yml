@@ -1,4 +1,4 @@
-name: 单机保活进程_s0_aytdd
+name: 单机保活进程_s0
 
 on:
   schedule:
