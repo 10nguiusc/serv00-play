@@ -1,4 +1,4 @@
-name: 单机保活进程_s7_cubacat
+name: keepalive_s7
 
 on:
   schedule:
