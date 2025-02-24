@@ -1,4 +1,4 @@
-name: 单机保活进程_s12_lucynana
+name: keepalive_s12
 
 on:
   schedule:
