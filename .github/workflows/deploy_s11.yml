@@ -1,4 +1,4 @@
-name: 单机保活进程_s11_serv00account01
+name: keepalive_s11
 
 on:
   schedule:
