@@ -1,4 +1,4 @@
-name: 单机保活进程_s2_nft8gq184
+name: keepalive_s2
 
 on:
   schedule:
