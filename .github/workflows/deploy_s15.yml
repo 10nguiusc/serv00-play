@@ -1,4 +1,4 @@
-name: 单机保活进程_s15_stephesn
+name: keepalive_s15
 
 on:
   schedule:
