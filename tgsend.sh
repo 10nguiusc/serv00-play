@@ -91,7 +91,7 @@ encoded_url=$(urlencode "$button_url")
 reply_markup='{
     "inline_keyboard": [
       [
-        {"text": "Serv00_Panel", "url": "https://nft5025.serv00.net"}
+        {"text": "Serv00_Panel", "url": "https://aytdd.serv00.net"}
       ],
       [
         {"text": "探针仪表盘", "url": "'"${encoded_url}"'"}
