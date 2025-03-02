@@ -4,7 +4,7 @@ on:
   schedule:
     # 使用cron表达式定义任务运行的时间
     # github使用utc时间
-    - cron: '28 23 * * *' #北京时间6点
+    - cron: '14 23 * * *' #北京时间6点
   workflow_dispatch:
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
 
       - name: 登录各个serv00并执行保活脚本
         env:
-          HOSTS_JSON: ${{ secrets.HOSTS_JSON_6 }}
+          HOSTS_JSON: ${{ secrets.HOSTS_JSON_14 }}
           TELEGRAM_TOKEN: ${{secrets.TELEGRAM_TOKEN}}
           TELEGRAM_USERID: ${{secrets.TELEGRAM_USERID}}
           WXSENDKEY: ${{secrets.WXSENDKEY}}
