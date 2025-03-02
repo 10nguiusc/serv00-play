@@ -1251,7 +1251,7 @@ installNeZhaAgent2() {
 
   if [[ "$local_version" != "$latest_version" ]]; then
     echo "发现新版本: $latest_version，当前版本: $local_version。正在更新..."
-    download_url="https://github.com/nezhahq/agent/releases/download/$latest_version/nezha-agent_freebsd_amd64.zip"
+    download_url="https://github.com/nezhahq/agent/releases/download/v1.7.3/nezha-agent_freebsd_amd64.zip"
 
     local filezip="nezha-agent_latest.zip"
     curl -sL -o "$filezip" "$download_url"
